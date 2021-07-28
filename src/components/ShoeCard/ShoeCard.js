@@ -30,6 +30,8 @@ const ShoeCard = ({
     : isNewShoe(releaseDate)
       ? 'new-release'
       : 'default'
+    const shouldDisplayProductFlag = variant !== 'default'
+  const shouldDisplaySalePrice = typeof salePrice === 'number'
 
   return (
     <Link href={`/shoe/${slug}`}>
@@ -40,11 +42,13 @@ const ShoeCard = ({
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price isWithSalePrice={shouldDisplaySalePrice}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {shouldDisplaySalePrice && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
+        {shouldDisplayProductFlag && <ProductFlag variant={variant}>{getProductFlagText(variant)}</ProductFlag> }
       </Wrapper>
     </Link>
   );
@@ -53,18 +57,29 @@ const ShoeCard = ({
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
+  flex: 1 25%;
+  min-width: 320px;
+  height: min-content;
+  padding: 18px;
 `;
 
-const Wrapper = styled.article``;
-
-const ImageWrapper = styled.div`
+const Wrapper = styled.article`
   position: relative;
 `;
 
-const Image = styled.img``;
+const ImageWrapper = styled.div`
+  position: relative;
+  border-radius: 16px 16px 4px 4px;
+  overflow: hidden;
+`;
+
+const Image = styled.img`
+  width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
 `;
 
 const Name = styled.h3`
@@ -72,15 +87,51 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  margin-left: auto;
+  text-decoration: ${({ isWithSalePrice }) => isWithSalePrice && 'line-through'};
+  color: ${({ isWithSalePrice }) => isWithSalePrice && COLORS.gray[700]};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
 `;
 
 const SalePrice = styled.span`
+  margin-left: auto;
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
 `;
+
+const ProductFlag = styled.div`
+  border-radius: 2px;
+  padding: 8px;
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: ${COLORS.white};
+  text-transform: capitalize;
+  background-color: ${getProductFlagColor};
+`
+
+function getProductFlagColor({ variant }) {
+  switch (variant) {
+    case 'on-sale':
+      return COLORS.primary
+    default:
+      return COLORS.secondary
+  }
+}
+
+function getProductFlagText(variant) {
+  switch (variant) {
+    case 'on-sale':
+      return 'sale'
+    default:
+      return 'just released!'
+  }
+}
 
 export default ShoeCard;

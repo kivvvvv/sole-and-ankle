@@ -23,6 +23,12 @@ const SuperHeader = () => {
 };
 
 const Wrapper = styled.div`
+  padding-right: 32px;
+  padding-left: 32px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
   font-size: 0.875rem;
   color: ${COLORS.gray[300]};
   background-color: ${COLORS.gray[900]};
@@ -30,6 +36,7 @@ const Wrapper = styled.div`
 
 const MarketingMessage = styled.span`
   color: ${COLORS.white};
+  flex: 1;
 `;
 
 const HelpLink = styled.a`
